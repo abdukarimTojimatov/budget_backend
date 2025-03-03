@@ -67,7 +67,7 @@ app.use(
     saveUninitialized: true, // Allow unauthenticated sessions for development
     store,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 360,
       httpOnly: true,
       secure: false, // No HTTPS in development
       sameSite: 'lax',

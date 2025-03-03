@@ -7,12 +7,17 @@ const sharingResolver = {
         const options = {
           page,
           limit,
+          populate: [{ path: 'userId', select: 'username' }], // Ensure correct population
         };
         const query = {};
         if (category) {
           query.sharingCategoryType = category; // Filter by category if provided
         }
         const result = await Sharing.paginate(query, options);
+        result.docs.map((sharing) => {
+          console.log(sharing.userId);
+        });
+        console.log('result', result);
         return result;
       } catch (error) {
         console.error('Error fetching sharings:', error);

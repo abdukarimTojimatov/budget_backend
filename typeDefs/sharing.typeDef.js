@@ -1,6 +1,13 @@
 const sharingTypeDef = `#graphql
+
+type User {
+    _id: ID!
+    username: String!
+  }
+
 type Sharing {
   _id: ID!
+  userId: User!
   sharingDescription: String
   sharingPaymentType: String!
   sharingAmount: Float!
