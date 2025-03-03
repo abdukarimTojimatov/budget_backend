@@ -1,14 +1,18 @@
 const expenseTypeDef = `#graphql
-type Expense {
-  _id: ID!
-  userId: ID!
-  description: String
-  paymentType: String!
-  category: String!
-  amount: Float!
-  date: String
-}
+ type User {
+    _id: ID!
+    username: String!
+  }
 
+  type Expense {
+    _id: ID!
+    userId: User!
+    description: String!
+    paymentType: String!
+    category: String!
+    amount: Float!
+    date: String
+  }
 
 type PaginatedExpenses {
   docs: [Expense]

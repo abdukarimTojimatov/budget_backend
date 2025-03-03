@@ -8,6 +8,7 @@ const expenseResolver = {
         const options = {
           page,
           limit,
+          populate: [{ path: 'userId', select: 'username' }], // Ensure correct population
         };
 
         const query = {};
