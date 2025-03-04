@@ -5,6 +5,7 @@ import expenseTypeDef from './expense.typeDef.js';
 import orderTypeDef from './order.typeDef.js';
 import sharingTypeDef from './sharing.typeDef.js';
 import rawMaterialTypeDef from './rawMaterial.typeDef.js';
+import dashboardTypeDef from './dashboard.typeDef.js';
 
 const mergedTypeDefs = mergeTypeDefs([
   userTypeDef,
@@ -12,6 +13,7 @@ const mergedTypeDefs = mergeTypeDefs([
   orderTypeDef,
   sharingTypeDef,
   rawMaterialTypeDef,
+  dashboardTypeDef,
 ]);
 
 export default mergedTypeDefs;
