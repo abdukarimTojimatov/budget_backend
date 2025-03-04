@@ -38,6 +38,29 @@ const orderResolver = {
         throw new Error('Error getting order');
       }
     },
+    orderStatistics: async () => {
+      try {
+        const result = await Order.aggregate([
+          {
+            $group: {
+              _id: '$orderCategory',
+              orderTotalAmount: { $sum: '$orderTotalAmount' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              orderCategory: '$_id',
+              orderTotalAmount: 1,
+            },
+          },
+        ]);
+        return result;
+      } catch (error) {
+        console.error('Error fetching order statistics:', error);
+        throw new Error('Error fetching order statistics: ' + error.message);
+      }
+    },
   },
   Mutation: {
     //

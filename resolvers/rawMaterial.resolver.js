@@ -30,6 +30,32 @@ const rawMaterialResolvers = {
         throw new Error('Error fetching raw material: ' + error.message);
       }
     },
+
+    rawMaterialStatistics: async () => {
+      try {
+        const result = await RawMaterial.aggregate([
+          {
+            $group: {
+              _id: '$rawMaterialCategory',
+              totalAmount: { $sum: '$rawMaterialTotalPrice' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              category: '$_id',
+              totalAmount: 1,
+            },
+          },
+        ]);
+        return result;
+      } catch (error) {
+        console.error('Error fetching raw material statistics:', error);
+        throw new Error(
+          'Error fetching raw material statistics: ' + error.message
+        );
+      }
+    },
   },
 
   Mutation: {

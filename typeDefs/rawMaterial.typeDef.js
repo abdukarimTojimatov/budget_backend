@@ -25,6 +25,11 @@ type Payment {
   date: String
 }
 
+type RawMaterialStatistics {
+  category: String
+  totalAmount: Float
+}
+
 type PaginatedRawMaterials {
   docs: [RawMaterial]
   totalDocs: Int
@@ -38,6 +43,8 @@ type PaginatedRawMaterials {
 type Query {
   getRawMaterials(page: Int, limit: Int): PaginatedRawMaterials
   getRawMaterial(id: ID!): RawMaterial
+  rawMaterialStatistics: [RawMaterialStatistics]
+  getRawMaterialStatistics: [RawMaterialStatistics]
 }
 
 type Mutation {

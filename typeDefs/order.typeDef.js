@@ -28,6 +28,11 @@ type Payment {
   date: String
 }
 
+type OrderStatistics {
+  orderCategory: String
+  orderTotalAmount: Float
+}
+
 type PaginatedOrders {
   docs: [Order]          # Array of Order objects
   totalDocs: Int        # Total number of orders
@@ -48,6 +53,7 @@ input OrderFilterInput {
 type Query {
   getOrders(page: Int,limit: Int,orderCategory: String,orderStatus: String,orderType: String,orderPaymentStatus: String): PaginatedOrders
   getOrder(id: ID!): Order
+  orderStatistics: [OrderStatistics]
 }
 
 type Mutation {
@@ -84,7 +90,7 @@ input UpdateOrderInput {
   orderExpensesDescription: String
   orderLocation: String
   orderReadyDate: String
-  orderPayments: [PaymentInput]  # Add this line
+  orderPayments: [PaymentInput]  
   orderStatus: String
   orderPaymentStatus: String
   orderTotalPaid: Float
