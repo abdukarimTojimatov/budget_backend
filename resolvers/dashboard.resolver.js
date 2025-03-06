@@ -109,6 +109,19 @@ const dashboardResolver = {
           },
         ]);
 
+        // Get order expenses total amount
+        const orderExpensesStats = await Order.aggregate([
+          ...(Object.keys(dateFilter).length > 0
+            ? [{ $match: dateFilter }]
+            : []),
+          {
+            $group: {
+              _id: null,
+              totalOrderExpenses: { $sum: '$orderExpensesAmount' },
+            },
+          },
+        ]);
+
         // Calculate totals
         const totalOrders = orderStats.reduce(
           (sum, item) => sum + item.orderTotalAmount,
@@ -126,10 +139,18 @@ const dashboardResolver = {
           (sum, item) => sum + item.totalAmount,
           0
         );
+        const totalOrderExpenses =
+          orderExpensesStats.length > 0
+            ? orderExpensesStats[0].totalOrderExpenses
+            : 0;
 
         // Calculate profits
-        const grossProfit = totalOrders - totalExpenses - totalRawMaterials;
-        const netProfit = grossProfit - totalSharings;
+        const grossProfit = totalOrders - totalOrderExpenses;
+        const netProfit = grossProfit - totalExpenses;
+
+        // Calculate total expenses amount (all costs combined)
+        const totalExpensesAmount =
+          totalExpenses + totalRawMaterials + totalSharings;
 
         // Get client debt and payment information
         const clientDebtStats = await Order.aggregate([
@@ -175,15 +196,79 @@ const dashboardResolver = {
             ? rawMaterialDebtStats[0].totalDebt
             : 0;
 
+        // Get customers with debt
+        const customersWithDebt = await Order.aggregate([
+          ...(Object.keys(dateFilter).length > 0
+            ? [{ $match: dateFilter }]
+            : []),
+          { $match: { orderTotalDebt: { $gt: 0 } } },
+          {
+            $group: {
+              _id: {
+                customerName: '$orderCustomerName',
+                phoneNumber: '$orderCustomerPhoneNumber',
+              },
+              totalDebt: { $sum: '$orderTotalDebt' },
+              totalPaid: { $sum: '$orderTotalPaid' },
+              totalAmount: { $sum: '$orderTotalAmount' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              customerName: '$_id.customerName',
+              phoneNumber: '$_id.phoneNumber',
+              totalDebt: 1,
+              totalPaid: 1,
+              totalAmount: 1,
+            },
+          },
+          { $sort: { totalDebt: -1 } },
+        ]);
+
+        // Get suppliers with debt
+        const suppliersWithDebt = await RawMaterial.aggregate([
+          ...(Object.keys(dateFilter).length > 0
+            ? [{ $match: dateFilter }]
+            : []),
+          { $match: { totalDebt: { $gt: 0 } } },
+          {
+            $group: {
+              _id: {
+                supplierName: '$customerName',
+                phoneNumber: '$phoneNumber',
+              },
+              totalDebt: { $sum: '$totalDebt' },
+              totalPaid: { $sum: '$totalPaid' },
+              totalAmount: { $sum: '$rawMaterialTotalPrice' },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              supplierName: '$_id.supplierName',
+              phoneNumber: '$_id.phoneNumber',
+              totalDebt: 1,
+              totalPaid: 1,
+              totalAmount: 1,
+            },
+          },
+          { $sort: { totalDebt: -1 } },
+        ]);
+
         return {
           orders: orderStats,
           expenses: expenseStats,
           sharings: sharingStats,
           rawMaterials: rawMaterialStats,
+          customersWithDebt,
+          suppliersWithDebt,
           totalOrders,
           totalExpenses,
           totalSharings,
           totalRawMaterials,
+          totalOrderExpenses,
+          totalExpensesAmount,
           grossProfit,
           netProfit,
           totalClientDebt,
