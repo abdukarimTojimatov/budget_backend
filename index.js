@@ -13,8 +13,7 @@ import { buildContext } from 'graphql-passport';
 import mergedResolvers from './resolvers/index.js';
 import mergedTypeDefs from './typeDefs/index.js';
 import { connectDB } from './db/connectDB.js';
-import dashboardTypeDef from './typeDefs/dashboard.typeDef.js';
-import dashboardResolver from './resolvers/dashboard.resolver.js';
+
 // Import Passport config function
 import { configurePassport } from './config/passport.js';
 

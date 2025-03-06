@@ -74,8 +74,8 @@ input CreateOrderInput {
   orderExpensesDescription: String
   orderLocation: String
   orderReadyDate: String
+  orderPayments: [PaymentInput]
 }
-
 
 input UpdateOrderInput {
   _id: ID!

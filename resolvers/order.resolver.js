@@ -1,5 +1,6 @@
 import Order from '../models/order.model.js';
 import mongoose from 'mongoose';
+import moment from 'moment'; // Import moment library
 
 const orderResolver = {
   Query: {
@@ -68,9 +69,47 @@ const orderResolver = {
       try {
         if (!context.getUser()) throw new Error('Unauthorized');
         console.log('input', input);
+
+        // Destructure the input to separate out payments and other data
+        const { orderPayments, orderTotalAmount, ...otherData } = input;
+
+        // Process the orderPayments array (if provided) and set default date if missing
+        let processedPayments = [];
+        if (orderPayments && Array.isArray(orderPayments)) {
+          processedPayments = orderPayments.map((payment) => ({
+            paymentType: payment.paymentType,
+            amount: payment.amount,
+            date: payment.date || moment().format('YYYY-MM-DD HH:mm'),
+          }));
+        }
+
+        // Calculate the total paid from the payments array
+        const orderTotalPaid = processedPayments.reduce(
+          (sum, payment) => sum + (payment.amount || 0),
+          0
+        );
+
+        // Calculate the remaining debt
+        const orderTotalDebt = orderTotalAmount - orderTotalPaid;
+
+        // Determine payment status based on the total paid vs. total amount
+        let orderPaymentStatus = 'tolanmadi';
+        if (orderTotalPaid === 0) {
+          orderPaymentStatus = 'tolanmadi';
+        } else if (orderTotalPaid < orderTotalAmount) {
+          orderPaymentStatus = 'qismanTolandi';
+        } else {
+          orderPaymentStatus = 'tolandi';
+        }
+
         const newOrder = new Order({
-          ...input,
+          ...otherData,
           userId: context.getUser()._id,
+          orderTotalAmount,
+          orderPayments: processedPayments,
+          orderTotalPaid,
+          orderTotalDebt,
+          orderPaymentStatus,
         });
 
         await newOrder.save();
