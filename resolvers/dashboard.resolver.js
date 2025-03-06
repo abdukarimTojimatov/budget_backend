@@ -149,8 +149,6 @@ const dashboardResolver = {
         const netProfit = grossProfit - totalExpenses;
 
         // Calculate total expenses amount (all costs combined)
-        const totalExpensesAmount =
-          totalExpenses + totalRawMaterials + totalSharings;
 
         // Get client debt and payment information
         const clientDebtStats = await Order.aggregate([
@@ -268,7 +266,7 @@ const dashboardResolver = {
           totalSharings,
           totalRawMaterials,
           totalOrderExpenses,
-          totalExpensesAmount,
+
           grossProfit,
           netProfit,
           totalClientDebt,
