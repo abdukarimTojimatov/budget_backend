@@ -208,7 +208,7 @@ const expenseResolver = {
       try {
         console.log('id', id);
         const deletedExpense = await Expense.findByIdAndDelete(id);
-        return deletedExpense;
+        return id;
       } catch (err) {
         console.error('Error on deleting expense:', err);
         throw new Error('Error deleting expense');

@@ -34,8 +34,8 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ['qabul qilingan', 'tayyorlanayabdi', 'tayyor', 'ornatildi'],
-      default: 'qabul qilingan',
+      enum: ['yangi', 'tayyorlanayabdi', 'tayyor', 'ornatildi'],
+      default: 'yangi',
     },
     orderType: {
       type: String,
@@ -44,7 +44,7 @@ const orderSchema = new mongoose.Schema(
     },
     orderPaymentStatus: {
       type: String,
-      enum: ['tolanmadi', 'qismanTolandi', 'tolandi'],
+      enum: ['tolanmadi', 'qisman', 'tolandi'],
       default: 'tolanmadi',
     },
     orderTotalAmount: {

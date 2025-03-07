@@ -97,7 +97,7 @@ const orderResolver = {
         if (orderTotalPaid === 0) {
           orderPaymentStatus = 'tolanmadi';
         } else if (orderTotalPaid < orderTotalAmount) {
-          orderPaymentStatus = 'qismanTolandi';
+          orderPaymentStatus = 'qisman';
         } else {
           orderPaymentStatus = 'tolandi';
         }
@@ -162,7 +162,7 @@ const orderResolver = {
         if (order.orderTotalPaid === 0) {
           order.orderPaymentStatus = 'tolanmadi';
         } else if (order.orderTotalPaid < order.orderTotalAmount) {
-          order.orderPaymentStatus = 'qismanTolandi';
+          order.orderPaymentStatus = 'qisman';
         } else {
           order.orderPaymentStatus = 'tolandi';
         }

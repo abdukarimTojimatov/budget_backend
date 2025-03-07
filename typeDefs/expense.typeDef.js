@@ -17,6 +17,7 @@ const expenseTypeDef = `#graphql
     category: Category
     amount: Float!
     date: String
+    categoryName: String!
   }
 
 type PaginatedExpenses {
@@ -32,19 +33,19 @@ type PaginatedExpenses {
 type Query {
   getExpenses(page: Int, limit: Int, categoryId: ID, startDate: String, endDate: String): PaginatedExpenses
   getExpense(id: ID!): Expense
-  categoryStatisticsExpense: [ExpenseCategoryStatistics!]
+  categoryStatisticsExpense: [ExpenseCategoryStatistics]
 }
 
 type Mutation {
   createExpense(input: CreateExpenseInput!): Expense
   updateExpense(input: UpdateExpenseInput!): Expense
-  deleteExpense(id: ID!): Expense
+  deleteExpense(id: ID!): ID
 }
 
 type ExpenseCategoryStatistics {
-  category: Category!
-  categoryName: String!
-  totalAmount: Float!
+  category: Category
+  categoryName: String
+  totalAmount: Float
 }
 
 input CreateExpenseInput {
