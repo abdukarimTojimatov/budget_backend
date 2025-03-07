@@ -4,8 +4,10 @@ import mongoose from 'mongoose';
 
 const expenseResolver = {
   Query: {
-    getExpenses: async (_, { page, limit, categoryId }) => {
+    getExpenses: async (_, { page, limit, categoryId, startDate, endDate }) => {
       try {
+        console.log('startDate', startDate);
+        console.log('endDate', endDate);
         const options = {
           page,
           limit,
@@ -16,9 +18,24 @@ const expenseResolver = {
         };
 
         const query = {};
+
+        // Apply category filter if provided
         if (categoryId) {
           // Convert string ID to MongoDB ObjectId for proper matching
           query.category = new mongoose.Types.ObjectId(categoryId);
+        }
+
+        // Apply date range filters if provided
+        if (startDate || endDate) {
+          query.date = {};
+
+          if (startDate) {
+            query.date.$gte = startDate;
+          }
+
+          if (endDate) {
+            query.date.$lte = endDate;
+          }
         }
 
         const result = await Expense.paginate(query, options);
@@ -29,31 +46,32 @@ const expenseResolver = {
           result.docs = result.docs.map((doc) => {
             // Convert to plain object if it's a mongoose document
             const plainDoc = doc.toObject ? doc.toObject() : { ...doc };
-            
+
             // Make sure category has a name field that's not null
             if (plainDoc.category) {
               // If category is populated with a Category object
               if (typeof plainDoc.category === 'object') {
                 // Make sure it has a name, or provide a default
                 if (!plainDoc.category.name) {
-                  plainDoc.category.name = plainDoc.categoryName || 'Uncategorized';
+                  plainDoc.category.name =
+                    plainDoc.categoryName || 'Uncategorized';
                 }
               } else {
                 // If it's just an ID, create a proper Category object
                 const categoryId = plainDoc.category;
                 plainDoc.category = {
                   _id: categoryId,
-                  name: plainDoc.categoryName || 'Uncategorized'
+                  name: plainDoc.categoryName || 'Uncategorized',
                 };
               }
             } else {
               // If category is null/undefined, provide a default
               plainDoc.category = {
                 _id: null,
-                name: 'Uncategorized'
+                name: 'Uncategorized',
               };
             }
-            
+
             return plainDoc;
           });
         }
@@ -95,7 +113,7 @@ const expenseResolver = {
         {
           $unwind: {
             path: '$categoryObj',
-            preserveNullAndEmptyArrays: true
+            preserveNullAndEmptyArrays: true,
           },
         },
         {
@@ -116,21 +134,20 @@ const expenseResolver = {
       ]);
 
       console.log('Raw Category Statistics:', categoryStatistics);
-      
+
       // Transform the results to include the proper Category object structure
-      const enhancedStatistics = categoryStatistics.map(stat => {
+      const enhancedStatistics = categoryStatistics.map((stat) => {
         return {
           totalAmount: stat.totalAmount,
           // Create proper Category object
           category: {
             _id: stat.category,
-            name: stat.categoryName || 'Uncategorized'
+            name: stat.categoryName || 'Uncategorized',
           },
-          categoryName: stat.categoryName || 'Uncategorized'
+          categoryName: stat.categoryName || 'Uncategorized',
         };
       });
-      
-      console.log('Enhanced Category Statistics:', enhancedStatistics);
+
       return enhancedStatistics;
     },
   },
@@ -151,7 +168,7 @@ const expenseResolver = {
         });
 
         await newExpense.save();
-        
+
         // Populate the category before returning
         const result = await newExpense.populate('category');
         return result;
@@ -177,7 +194,7 @@ const expenseResolver = {
           input,
           { new: true }
         );
-        
+
         // Populate the category before returning
         const result = await updateExpense.populate('category');
         return result;

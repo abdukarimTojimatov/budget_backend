@@ -30,7 +30,7 @@ type PaginatedExpenses {
 }
 
 type Query {
-  getExpenses(page: Int, limit: Int, categoryId: ID): PaginatedExpenses
+  getExpenses(page: Int, limit: Int, categoryId: ID, startDate: String, endDate: String): PaginatedExpenses
   getExpense(id: ID!): Expense
   categoryStatisticsExpense: [ExpenseCategoryStatistics!]
 }

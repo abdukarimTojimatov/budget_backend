@@ -2,7 +2,7 @@ import Sharing from '../models/sharing.model.js';
 
 const sharingResolver = {
   Query: {
-    getSharings: async (_, { page, limit, category }) => {
+    getSharings: async (_, { page, limit, category, startDate, endDate }) => {
       try {
         const options = {
           page,
@@ -10,9 +10,26 @@ const sharingResolver = {
           populate: [{ path: 'userId', select: 'username' }], // Ensure correct population
         };
         const query = {};
+        console.log('startDate', startDate);
+        console.log('endDate', endDate);
+        // Apply category filter if provided
         if (category) {
-          query.sharingCategoryType = category; // Filter by category if provided
+          query.sharingCategoryType = category;
         }
+
+        // Apply date range filters if provided
+        if (startDate || endDate) {
+          query.sharingDate = {};
+
+          if (startDate) {
+            query.sharingDate.$gte = startDate;
+          }
+
+          if (endDate) {
+            query.sharingDate.$lte = endDate;
+          }
+        }
+        console.log('query', query);
         const result = await Sharing.paginate(query, options);
         result.docs.map((sharing) => {
           console.log(sharing.userId);

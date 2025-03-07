@@ -3,13 +3,44 @@ import moment from 'moment';
 
 const rawMaterialResolvers = {
   Query: {
-    getRawMaterials: async (_, { page, limit }) => {
+    getRawMaterials: async (
+      _,
+      { page, limit, category, startDate, endDate }
+    ) => {
       try {
         const options = {
           page,
           limit,
         };
-        const result = await RawMaterial.paginate({}, options);
+
+        console.log('startDate', startDate);
+        console.log('endDate', endDate);
+
+        // Build query with filters
+        const query = {};
+
+        // Apply category filter if provided
+        if (category) {
+          query.rawMaterialCategory = category;
+        }
+
+        // Apply date range filters if provided
+        if (startDate || endDate) {
+          query.createdAt = {};
+
+          if (startDate) {
+            query.createdAt.$gte = new Date(startDate);
+          }
+
+          if (endDate) {
+            // Set endDate to end of day
+            const endOfDay = new Date(endDate);
+            endOfDay.setHours(23, 59, 59, 999);
+            query.createdAt.$lte = endOfDay;
+          }
+        }
+
+        const result = await RawMaterial.paginate(query, options);
         return result;
       } catch (error) {
         console.error('Error fetching raw materials:', error);

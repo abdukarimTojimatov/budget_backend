@@ -41,7 +41,7 @@ type PaginatedRawMaterials {
 }
 
 type Query {
-  getRawMaterials(page: Int, limit: Int): PaginatedRawMaterials
+  getRawMaterials(page: Int, limit: Int,category: ID, startDate: String, endDate: String): PaginatedRawMaterials
   getRawMaterial(id: ID!): RawMaterial
   rawMaterialStatistics: [RawMaterialStatistics]
   getRawMaterialStatistics: [RawMaterialStatistics]

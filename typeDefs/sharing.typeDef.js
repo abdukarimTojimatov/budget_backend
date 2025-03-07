@@ -26,7 +26,7 @@ type PaginatedSharings {
 }
 
 type Query {
-  getSharings(page: Int, limit: Int, category: String): PaginatedSharings
+  getSharings(page: Int, limit: Int, category: String, startDate: String, endDate: String): PaginatedSharings
   getSharing(id: ID!): Sharing
   categoryStatisticsSharing: [CategoryStatistics!]
 }
