@@ -1,11 +1,19 @@
 const dashboardTypeDef = `#graphql
+  # Import Category type from expense.typeDef.js
+  scalar ID
+
+  type Category {
+    _id: ID
+    name: String!
+  }
   type OrderStatisticsData {
     orderCategory: String
     orderTotalAmount: Float
   }
 
   type ExpenseStatisticsData {
-    category: String
+    category: Category
+    categoryName: String
     totalAmount: Float
   }
 

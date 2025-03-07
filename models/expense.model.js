@@ -17,8 +17,12 @@ const expenseSchema = new mongoose.Schema({
     required: true,
   },
   category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ExpenseCategory',
+    required: true,
+  },
+  categoryName: {
     type: String,
-    enum: ['Laminad', 'Mashina xarajatlari', 'Soliq', 'Elektr', 'Abduzunnun'],
     required: true,
   },
   amount: {

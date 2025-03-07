@@ -4,12 +4,17 @@ const expenseTypeDef = `#graphql
     username: String!
   }
 
+  type Category {
+  _id: ID
+  name: String!
+  }
+
   type Expense {
     _id: ID!
     userId: User!
     description: String!
     paymentType: String!
-    category: String!
+    category: Category
     amount: Float!
     date: String
   }
@@ -25,9 +30,9 @@ type PaginatedExpenses {
 }
 
 type Query {
-  getExpenses(page: Int, limit: Int,category: String): PaginatedExpenses
+  getExpenses(page: Int, limit: Int, categoryId: ID): PaginatedExpenses
   getExpense(id: ID!): Expense
-  categoryStatisticsExpense: [CategoryStatistics!]
+  categoryStatisticsExpense: [ExpenseCategoryStatistics!]
 }
 
 type Mutation {
@@ -36,14 +41,15 @@ type Mutation {
   deleteExpense(id: ID!): Expense
 }
 
-type CategoryStatistics {
-  category: String!
+type ExpenseCategoryStatistics {
+  category: ID!
+  categoryName: String!
   totalAmount: Float!
 }
 
 input CreateExpenseInput {
   description: String
-  category: String!
+  category: ID!
   amount: Float!
   paymentType: String!
   date: String
@@ -53,7 +59,7 @@ input UpdateExpenseInput {
   _id: ID!
   description: String
   paymentType: String
-  category: String
+  category: ID
   amount: Float
   date: String
 }`;

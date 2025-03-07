@@ -2,6 +2,7 @@ import Order from '../models/order.model.js';
 import Expense from '../models/expense.model.js';
 import Sharing from '../models/sharing.model.js';
 import RawMaterial from '../models/rawMaterial.model.js';
+import ExpenseCategory from '../models/expenseCategory.model.js';
 
 const dashboardResolver = {
   Query: {
@@ -69,6 +70,45 @@ const dashboardResolver = {
           },
         ]);
 
+        // Enhance expense stats with category names
+        const categoryIds = expenseStats.map((stat) => stat.category);
+        console.log('Category IDs:', categoryIds);
+        
+        const categories = await ExpenseCategory.find({
+          _id: { $in: categoryIds },
+        });
+        console.log('Found categories:', categories.map(c => ({ id: c._id.toString(), name: c.name })));
+
+        // Add category names to expense stats
+        const enhancedExpenseStats = expenseStats.map((stat) => {
+          console.log('Looking for category match for:', stat.category);
+          
+          // Find matching category
+          const category = categories.find(
+            (cat) => {
+              const catIdStr = cat._id.toString();
+              const statCatStr = typeof stat.category === 'object' ? stat.category.toString() : stat.category;
+              console.log(`Comparing: ${catIdStr} === ${statCatStr}`, catIdStr === statCatStr);
+              return catIdStr === statCatStr;
+            }
+          );
+
+          // Now we need to return a Category object instead of just the ID
+          const categoryId = typeof stat.category === 'object' ? stat.category.toString() : stat.category;
+          const categoryName = category ? category.name : 'Uncategorized';
+          
+          return {
+            ...stat,
+            // Return a proper Category object with _id and name
+            category: {
+              _id: categoryId,
+              name: categoryName
+            },
+            // Keep categoryName for backward compatibility
+            categoryName: categoryName,
+          };
+        });
+        console.log('Enhanced stats:', enhancedExpenseStats);
         // Get sharing statistics
         const sharingStats = await Sharing.aggregate([
           ...(Object.keys(sharingDateFilter).length > 0
@@ -256,7 +296,7 @@ const dashboardResolver = {
 
         return {
           orders: orderStats,
-          expenses: expenseStats,
+          expenses: enhancedExpenseStats,
           sharings: sharingStats,
           rawMaterials: rawMaterialStats,
           customersWithDebt,
