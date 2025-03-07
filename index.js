@@ -78,6 +78,7 @@ app.use(
     },
   })
 );
+app.set('trust proxy', 1);
 
 // Initialize Passport
 app.use(passport.initialize());
