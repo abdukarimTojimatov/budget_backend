@@ -5,7 +5,7 @@ const expenseTypeDef = `#graphql
   }
 
   type Category {
-  _id: ID
+  _id: ID!
   name: String!
   }
 
@@ -42,7 +42,7 @@ type Mutation {
 }
 
 type ExpenseCategoryStatistics {
-  category: ID!
+  category: Category!
   categoryName: String!
   totalAmount: Float!
 }

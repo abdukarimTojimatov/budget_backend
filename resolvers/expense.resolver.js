@@ -151,7 +151,10 @@ const expenseResolver = {
         });
 
         await newExpense.save();
-        return newExpense;
+        
+        // Populate the category before returning
+        const result = await newExpense.populate('category');
+        return result;
       } catch (err) {
         console.error('Error creating expense:', err);
         throw new Error(err.message || 'Error creating expense');
@@ -174,7 +177,10 @@ const expenseResolver = {
           input,
           { new: true }
         );
-        return updateExpense;
+        
+        // Populate the category before returning
+        const result = await updateExpense.populate('category');
+        return result;
       } catch (err) {
         console.error('Error updating expense:', err);
         throw new Error('Error updating expense');

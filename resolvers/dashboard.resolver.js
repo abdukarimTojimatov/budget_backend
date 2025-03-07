@@ -128,6 +128,20 @@ const dashboardResolver = {
             },
           },
         ]);
+        
+        // Enhance sharing stats with category objects
+        const enhancedSharingStats = sharingStats.map((stat) => {
+          return {
+            ...stat,
+            // Create a Category object
+            category: {
+              _id: stat.category,
+              name: stat.category // For sharing, use the category name as both id and name
+            },
+            // Keep categoryName for consistent API
+            categoryName: stat.category,
+          };
+        });
 
         // Get raw material statistics
         const rawMaterialStats = await RawMaterial.aggregate([
@@ -148,6 +162,20 @@ const dashboardResolver = {
             },
           },
         ]);
+        
+        // Enhance raw material stats with category objects
+        const enhancedRawMaterialStats = rawMaterialStats.map((stat) => {
+          return {
+            ...stat,
+            // Create a Category object
+            category: {
+              _id: stat.category,
+              name: stat.category // For raw materials, use the category name as both id and name
+            },
+            // Keep categoryName for consistent API
+            categoryName: stat.category,
+          };
+        });
 
         // Get order expenses total amount
         const orderExpensesStats = await Order.aggregate([
@@ -297,8 +325,8 @@ const dashboardResolver = {
         return {
           orders: orderStats,
           expenses: enhancedExpenseStats,
-          sharings: sharingStats,
-          rawMaterials: rawMaterialStats,
+          sharings: enhancedSharingStats,
+          rawMaterials: enhancedRawMaterialStats,
           customersWithDebt,
           suppliersWithDebt,
           totalOrders,

@@ -18,12 +18,14 @@ const dashboardTypeDef = `#graphql
   }
 
   type SharingStatisticsData {
-    category: String
+    category: Category
+    categoryName: String
     totalAmount: Float
   }
 
   type RawMaterialStatisticsData {
-    category: String
+    category: Category
+    categoryName: String
     totalAmount: Float
   }
 
