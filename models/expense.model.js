@@ -33,6 +33,17 @@ const expenseSchema = new mongoose.Schema({
     type: String,
   },
 });
+
+// Add indexes for improved query performance
+// Compound index for userId + date for efficient filtering of user expenses by date
+expenseSchema.index({ userId: 1, date: -1 });
+
+// Index for category lookups
+expenseSchema.index({ category: 1 });
+
+// Index for payment type filtering
+expenseSchema.index({ paymentType: 1 });
+
 expenseSchema.plugin(mongoosePaginate);
 const Expense = mongoose.model('Expense', expenseSchema);
 

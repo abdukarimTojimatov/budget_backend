@@ -29,6 +29,16 @@ const sharingSchema = new mongoose.Schema({
     type: String,
   },
 });
+// Add indexes for improved query performance
+// Compound index for userId + sharingDate for efficient filtering of sharings by date
+sharingSchema.index({ userId: 1, sharingDate: -1 });
+
+// Index for sharing category type for efficient filtering
+sharingSchema.index({ sharingCategoryType: 1 });
+
+// Index for payment type filtering
+sharingSchema.index({ sharingPaymentType: 1 });
+
 sharingSchema.plugin(mongoosePaginate);
 const Sharing = mongoose.model('Sharing', sharingSchema);
 

@@ -87,6 +87,19 @@ const rawMaterialSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
+// Add indexes for improved query performance
+// Compound index for userId + date for efficient filtering of user's raw materials by date
+rawMaterialSchema.index({ userId: 1, date: -1 });
+
+// Index for raw material category for efficient category filtering
+rawMaterialSchema.index({ rawMaterialCategory: 1 });
+
+// Index for payment status filtering
+rawMaterialSchema.index({ paymentStatus: 1 });
+
+// Index for customer name for search operations
+rawMaterialSchema.index({ customerName: 1 });
+
 rawMaterialSchema.plugin(mongoosePaginate);
 const RawMaterial = mongoose.model('RawMaterial', rawMaterialSchema);
 

@@ -130,6 +130,22 @@ orderSchema.pre('save', async function (next) {
   next();
 });
 
+// Add indexes for improved query performance
+// Compound index for userId + date for efficient filtering of user orders by date
+orderSchema.index({ userId: 1, date: -1 });
+
+// Index for order status for efficient status filtering
+orderSchema.index({ orderStatus: 1 });
+
+// Index for orderAutoNumber for quick lookups
+orderSchema.index({ orderAutoNumber: 1 });
+
+// Compound index for common filtering patterns
+orderSchema.index({ orderCategory: 1, orderStatus: 1 });
+
+// Index for payment status filtering
+orderSchema.index({ orderPaymentStatus: 1 });
+
 orderSchema.plugin(mongoosePaginate);
 const Order = mongoose.model('Order', orderSchema);
 
