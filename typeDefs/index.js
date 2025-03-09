@@ -8,6 +8,7 @@ import sharingTypeDef from './sharing.typeDef.js';
 import rawMaterialTypeDef from './rawMaterial.typeDef.js';
 import dashboardTypeDef from './dashboard.typeDef.js';
 import employeeTypeDef from './employee.typeDefs.js';
+import scalarTypeDef from './scalar.typeDef.js';
 
 const mergedTypeDefs = mergeTypeDefs([
   userTypeDef,
@@ -18,6 +19,7 @@ const mergedTypeDefs = mergeTypeDefs([
   rawMaterialTypeDef,
   dashboardTypeDef,
   employeeTypeDef,
+  scalarTypeDef,
 ]);
 
 export default mergedTypeDefs;

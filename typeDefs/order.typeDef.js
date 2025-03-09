@@ -20,6 +20,7 @@ type Order {
   orderAutoNumber: String
   orderStatus: String!
   orderPayments: [Payment]
+  images: [String]
 }
 
 type Payment {
@@ -60,6 +61,7 @@ type Mutation {
   createOrder(input: CreateOrderInput!): Order
   updateOrder(input: UpdateOrderInput!): Order
   deleteOrder(id: ID!): Order
+  uploadOrderImage(orderId: ID!, file: Upload!): Order
 }
 
 input CreateOrderInput {
@@ -75,6 +77,7 @@ input CreateOrderInput {
   orderLocation: String
   orderReadyDate: String
   orderPayments: [PaymentInput]
+  images: [String]
 }
 
 input UpdateOrderInput {
@@ -95,6 +98,7 @@ input UpdateOrderInput {
   orderPaymentStatus: String
   orderTotalPaid: Float
   orderTotalDebt: Float
+  images: [String]
 
 }
 

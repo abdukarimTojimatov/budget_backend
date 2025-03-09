@@ -1,6 +1,7 @@
 import Order from '../models/order.model.js';
 import mongoose from 'mongoose';
 import moment from 'moment'; // Import moment library
+import { processUpload } from '../utils/fileUpload.js';
 
 const orderResolver = {
   Query: {
@@ -185,6 +186,33 @@ const orderResolver = {
       } catch (err) {
         console.error('Error on deleting order:', err);
         throw new Error('Error deleting order');
+      }
+    },
+
+    // Upload image for an order
+    uploadOrderImage: async (_, { orderId, file }) => {
+      try {
+        // Find the order
+        const order = await Order.findById(orderId);
+        if (!order) {
+          throw new Error('Order not found');
+        }
+
+        // Process the file upload
+        const imageUrl = await processUpload(file);
+
+        // Add the new image URL to the order's images array
+        if (!order.images) {
+          order.images = [];
+        }
+        order.images.push(imageUrl);
+
+        // Save the updated order
+        await order.save();
+        return order;
+      } catch (err) {
+        console.error('Error uploading image:', err);
+        throw new Error(`Error uploading image: ${err.message}`);
       }
     },
   },

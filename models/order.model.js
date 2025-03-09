@@ -100,6 +100,10 @@ const orderSchema = new mongoose.Schema(
     orderReadyDate: {
       type: String,
     },
+    images: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true, versionKey: false }
 );
