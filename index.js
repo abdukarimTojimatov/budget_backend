@@ -59,7 +59,7 @@ app.use(
     origin: [
       'http://localhost:3000',
       'http://92.112.180.30:3000',
-      'http://elegro.uz',
+      'https://elegro.uz',
     ], // Add frontend origins used in development
     credentials: true, // Enable sending cookies/credentials
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
@@ -176,26 +176,34 @@ app.post(
 app.get('/api/download-order-image/:imageFileName', async (req, res) => {
   try {
     const { imageFileName } = req.params;
-    
+
     // Construct the full file path
-    const fullImagePath = path.join(__dirname, 'uploads', decodeURIComponent(imageFileName));
-    
+    const fullImagePath = path.join(
+      __dirname,
+      'uploads',
+      decodeURIComponent(imageFileName)
+    );
+
     // Check if the file exists
     if (!fs.existsSync(fullImagePath)) {
       return res.status(404).json({ message: 'Image not found' });
     }
-    
+
     // Set headers for download rather than display
-    res.setHeader('Content-Disposition', `attachment; filename="${imageFileName}"`);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${imageFileName}"`
+    );
     res.setHeader('Content-Type', 'application/octet-stream');
-    
+
     // Stream the file to the response
     const fileStream = fs.createReadStream(fullImagePath);
     fileStream.pipe(res);
-    
   } catch (error) {
     console.error('Error downloading image:', error);
-    return res.status(500).json({ message: 'Error downloading image', error: error.message });
+    return res
+      .status(500)
+      .json({ message: 'Error downloading image', error: error.message });
   }
 });
 
