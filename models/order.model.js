@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    orderAutoNumber: { type: String, required: false, unique: true },
+    orderAutoNumber: { type: String, required: false },
     orderName: {
       type: String,
       required: true,

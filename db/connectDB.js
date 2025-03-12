@@ -31,6 +31,7 @@ const seedExpenseCategories = async () => {
 
 export const connectDB = async () => {
   try {
+    // Connect to MongoDB without deprecated options
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     

@@ -55,6 +55,7 @@ configurePassport();
 
 // CORS Middleware - Restrict to development origins
 app.use(
+  '/graphql',
   cors({
     origin: [
       'http://localhost:3000',
