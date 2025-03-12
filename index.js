@@ -61,6 +61,8 @@ app.use(
       'http://92.112.180.30:3000',
       'https://elegro.uz',
       'http://elegro.uz',
+      'https://www.elegro.uz',
+      'http://www.elegro.uz',
     ], // Add frontend origins used in development
     credentials: true, // Enable sending cookies/credentials
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
