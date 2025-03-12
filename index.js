@@ -66,7 +66,7 @@ app.use(
     ], // Add frontend origins used in development
     credentials: true, // Enable sending cookies/credentials
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type,Authorization',
+    allowedHeaders: 'Content-Type,Authorization,X-Requested-With,Origin,Accept',
   })
 );
 
@@ -272,6 +272,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const server = new ApolloServer({
   typeDefs: mergedTypeDefs,
   resolvers: mergedResolvers,
+  csrfPrevention: false,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   introspection: true, // Enable introspection for Playground
   formatError: (error) => {
