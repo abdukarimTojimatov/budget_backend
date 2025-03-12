@@ -61,10 +61,24 @@ app.use(
       'http://localhost:3000',
       'http://92.112.180.30:3000',
       'https://elegro.uz',
+      'http://elegro.uz',
     ], // Add frontend origins used in development
     credentials: true, // Enable sending cookies/credentials
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
+  })
+);
+
+app.use(
+  '/graphql',
+  express.json(),
+  expressMiddleware(server, {
+    context: async ({ req, res }) => ({
+      ...buildContext({ req, res }),
+      req,
+      res,
+      isDevelopment,
+    }),
   })
 );
 
@@ -284,18 +298,6 @@ const startServer = async () => {
     await server.start();
 
     // Apply Apollo middleware
-    app.use(
-      '/graphql',
-      express.json(),
-      expressMiddleware(server, {
-        context: async ({ req, res }) => ({
-          ...buildContext({ req, res }),
-          req,
-          res,
-          isDevelopment,
-        }),
-      })
-    );
 
     // Connect to MongoDB and start the server
     await connectDB();
