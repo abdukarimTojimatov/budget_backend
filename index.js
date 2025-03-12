@@ -55,7 +55,6 @@ configurePassport();
 
 // CORS Middleware - Restrict to development origins
 app.use(
-  '/graphql',
   cors({
     origin: [
       'http://localhost:3000',
@@ -66,19 +65,6 @@ app.use(
     credentials: true, // Enable sending cookies/credentials
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
-  })
-);
-
-app.use(
-  '/graphql',
-  express.json(),
-  expressMiddleware(server, {
-    context: async ({ req, res }) => ({
-      ...buildContext({ req, res }),
-      req,
-      res,
-      isDevelopment,
-    }),
   })
 );
 
@@ -296,7 +282,18 @@ const server = new ApolloServer({
 const startServer = async () => {
   try {
     await server.start();
-
+    app.use(
+      '/graphql',
+      express.json(),
+      expressMiddleware(server, {
+        context: async ({ req, res }) => ({
+          ...buildContext({ req, res }),
+          req,
+          res,
+          isDevelopment,
+        }),
+      })
+    );
     // Apply Apollo middleware
 
     // Connect to MongoDB and start the server
