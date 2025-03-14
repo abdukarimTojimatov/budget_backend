@@ -5,8 +5,8 @@ const expenseTypeDef = `#graphql
   }
 
   type Category {
-  _id: ID!
-  name: String!
+  _id: ID
+  name: String
   }
 
   type Expense {
@@ -17,7 +17,7 @@ const expenseTypeDef = `#graphql
     category: Category
     amount: Float!
     date: String
-    categoryName: String!
+    categoryName: String
   }
 
 type PaginatedExpenses {
