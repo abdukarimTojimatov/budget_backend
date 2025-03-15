@@ -2,8 +2,7 @@ const rawMaterialTypeDef = `#graphql
 type RawMaterial {
   _id: ID!
   userId: ID!
-  customerName: String!
-  phoneNumber: String
+  customer: Customer
   rawMaterialName: String!
   rawMaterialDescription: String
   rawMaterialQuantity: Float!
@@ -57,8 +56,7 @@ input CreateRawMaterialInput {
   rawMaterialName: String
   rawMaterialDescription: String
   rawMaterialQuantity: Float
-  customerName: String
-  phoneNumber: String
+  customer: ID
   unitOfMeasurement: String
   rawMaterialCategory: String
   rawMaterialPrice: Float
@@ -68,8 +66,7 @@ input CreateRawMaterialInput {
 input UpdateRawMaterialInput {
   _id: ID!
   rawMaterialName: String
-  customerName: String
-  phoneNumber: String
+  customer: ID
   rawMaterialDescription: String
   rawMaterialQuantity: Float
   rawMaterialCategory: String

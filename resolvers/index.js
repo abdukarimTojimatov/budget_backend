@@ -7,6 +7,7 @@ import sharingResolver from './sharing.resolver.js';
 import rawMaterialResolver from './rawMaterial.resolver.js';
 import dashboardResolver from './dashboard.resolver.js';
 import employeeResolver from './employee.resolver.js';
+import customerResolver from './customer.resolver.js';
 
 const mergedResolvers = mergeResolvers([
   userResolver,
@@ -17,6 +18,7 @@ const mergedResolvers = mergeResolvers([
   rawMaterialResolver,
   dashboardResolver,
   employeeResolver,
+  customerResolver,
 ]);
 
 export default mergedResolvers;

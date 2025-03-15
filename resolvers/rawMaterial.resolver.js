@@ -11,6 +11,7 @@ const rawMaterialResolvers = {
         const options = {
           page,
           limit,
+          populate: 'customer',
         };
 
         console.log('startDate', startDate);
@@ -50,7 +51,7 @@ const rawMaterialResolvers = {
 
     getRawMaterial: async (_, { id }) => {
       try {
-        const rawMaterial = await RawMaterial.findById(id);
+        const rawMaterial = await RawMaterial.findById(id).populate('customer');
         if (!rawMaterial) {
           throw new Error('Raw Material not found');
         }
@@ -143,7 +144,12 @@ const rawMaterialResolvers = {
         });
 
         await newRawMaterial.save();
-        return newRawMaterial;
+
+        // Populate the customer reference before returning
+        const populatedRawMaterial = await RawMaterial.findById(
+          newRawMaterial._id
+        ).populate('customer');
+        return populatedRawMaterial;
       } catch (error) {
         console.error('Error creating raw material:', error);
         throw new Error('Error creating raw material: ' + error.message);
@@ -211,9 +217,14 @@ const rawMaterialResolvers = {
         rawMaterial.paymentStatus =
           rawMaterial.totalPaid >= rawMaterial.rawMaterialTotalPrice;
 
-        // Save and return the updated raw material document.
-        const updatedRawMaterial = await rawMaterial.save();
-        return updatedRawMaterial;
+        // Save the updated raw material document.
+        await rawMaterial.save();
+
+        // Populate the customer reference before returning
+        const populatedRawMaterial = await RawMaterial.findById(
+          rawMaterial._id
+        ).populate('customer');
+        return populatedRawMaterial;
       } catch (error) {
         console.error('Error updating raw material:', error);
         throw new Error('Error updating raw material: ' + error.message);

@@ -297,7 +297,10 @@ const startServer = async () => {
         }),
       })
     );
-    // Apply Apollo middleware
+    // Set up JSON parsing middleware for REST APIs
+    app.use(express.json());
+
+    // REST API Routes
 
     // Connect to MongoDB and start the server
     await connectDB();

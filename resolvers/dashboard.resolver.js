@@ -73,36 +73,46 @@ const dashboardResolver = {
         // Enhance expense stats with category names
         const categoryIds = expenseStats.map((stat) => stat.category);
         console.log('Category IDs:', categoryIds);
-        
+
         const categories = await ExpenseCategory.find({
           _id: { $in: categoryIds },
         });
-        console.log('Found categories:', categories.map(c => ({ id: c._id.toString(), name: c.name })));
+        console.log(
+          'Found categories:',
+          categories.map((c) => ({ id: c._id.toString(), name: c.name }))
+        );
 
         // Add category names to expense stats
         const enhancedExpenseStats = expenseStats.map((stat) => {
           console.log('Looking for category match for:', stat.category);
-          
+
           // Find matching category
-          const category = categories.find(
-            (cat) => {
-              const catIdStr = cat._id.toString();
-              const statCatStr = typeof stat.category === 'object' ? stat.category.toString() : stat.category;
-              console.log(`Comparing: ${catIdStr} === ${statCatStr}`, catIdStr === statCatStr);
-              return catIdStr === statCatStr;
-            }
-          );
+          const category = categories.find((cat) => {
+            const catIdStr = cat._id.toString();
+            const statCatStr =
+              typeof stat.category === 'object'
+                ? stat.category.toString()
+                : stat.category;
+            console.log(
+              `Comparing: ${catIdStr} === ${statCatStr}`,
+              catIdStr === statCatStr
+            );
+            return catIdStr === statCatStr;
+          });
 
           // Now we need to return a Category object instead of just the ID
-          const categoryId = typeof stat.category === 'object' ? stat.category.toString() : stat.category;
+          const categoryId =
+            typeof stat.category === 'object'
+              ? stat.category.toString()
+              : stat.category;
           const categoryName = category ? category.name : 'Uncategorized';
-          
+
           return {
             ...stat,
             // Return a proper Category object with _id and name
             category: {
               _id: categoryId,
-              name: categoryName
+              name: categoryName,
             },
             // Keep categoryName for backward compatibility
             categoryName: categoryName,
@@ -128,7 +138,7 @@ const dashboardResolver = {
             },
           },
         ]);
-        
+
         // Enhance sharing stats with category objects
         const enhancedSharingStats = sharingStats.map((stat) => {
           return {
@@ -136,7 +146,7 @@ const dashboardResolver = {
             // Create a Category object
             category: {
               _id: stat.category,
-              name: stat.category // For sharing, use the category name as both id and name
+              name: stat.category, // For sharing, use the category name as both id and name
             },
             // Keep categoryName for consistent API
             categoryName: stat.category,
@@ -162,7 +172,7 @@ const dashboardResolver = {
             },
           },
         ]);
-        
+
         // Enhance raw material stats with category objects
         const enhancedRawMaterialStats = rawMaterialStats.map((stat) => {
           return {
@@ -170,7 +180,7 @@ const dashboardResolver = {
             // Create a Category object
             category: {
               _id: stat.category,
-              name: stat.category // For raw materials, use the category name as both id and name
+              name: stat.category, // For raw materials, use the category name as both id and name
             },
             // Keep categoryName for consistent API
             categoryName: stat.category,
@@ -299,10 +309,22 @@ const dashboardResolver = {
             : []),
           { $match: { totalDebt: { $gt: 0 } } },
           {
+            $lookup: {
+              from: 'customers',
+              localField: 'customer',
+              foreignField: '_id',
+              as: 'customerData',
+            },
+          },
+          {
+            $unwind: '$customerData',
+          },
+          {
             $group: {
               _id: {
-                supplierName: '$customerName',
-                phoneNumber: '$phoneNumber',
+                customerId: '$customer',
+                supplierName: '$customerData.name',
+                phoneNumber: '$customerData.phoneNumber',
               },
               totalDebt: { $sum: '$totalDebt' },
               totalPaid: { $sum: '$totalPaid' },
@@ -312,6 +334,7 @@ const dashboardResolver = {
           {
             $project: {
               _id: 0,
+              customerId: '$_id.customerId',
               supplierName: '$_id.supplierName',
               phoneNumber: '$_id.phoneNumber',
               totalDebt: 1,
@@ -334,7 +357,6 @@ const dashboardResolver = {
           totalSharings,
           totalRawMaterials,
           totalOrderExpenses,
-
           grossProfit,
           netProfit,
           totalClientDebt,

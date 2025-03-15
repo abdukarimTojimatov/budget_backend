@@ -38,6 +38,7 @@ const dashboardTypeDef = `#graphql
   }
 
   type SupplierDebtData {
+    customerId: ID
     supplierName: String
     phoneNumber: String
     totalDebt: Float

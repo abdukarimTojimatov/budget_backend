@@ -9,13 +9,10 @@ const rawMaterialSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    customerName: {
-      type: String,
+    customer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Customer',
       required: true,
-    },
-    phoneNumber: {
-      type: String,
-      required: false,
     },
     rawMaterialName: {
       type: String,
@@ -97,8 +94,8 @@ rawMaterialSchema.index({ rawMaterialCategory: 1 });
 // Index for payment status filtering
 rawMaterialSchema.index({ paymentStatus: 1 });
 
-// Index for customer name for search operations
-rawMaterialSchema.index({ customerName: 1 });
+// Index for customer reference for efficient lookups
+rawMaterialSchema.index({ customer: 1 });
 
 rawMaterialSchema.plugin(mongoosePaginate);
 const RawMaterial = mongoose.model('RawMaterial', rawMaterialSchema);
