@@ -15,6 +15,7 @@ const expenseResolver = {
             { path: 'userId', select: 'username' },
             { path: 'category', select: 'name' },
           ],
+          sort: { createdAt: -1 },
         };
 
         const query = {};
@@ -88,17 +89,20 @@ const expenseResolver = {
         if (!expense) {
           throw new Error('not found expense');
         }
-        
+
         // Convert to plain object to modify it
-        const expenseObj = expense.toObject ? expense.toObject() : { ...expense };
-        
+        const expenseObj = expense.toObject
+          ? expense.toObject()
+          : { ...expense };
+
         // Ensure category has valid structure with a name field
         if (expenseObj.category) {
           // If category is populated with a Category object
           if (typeof expenseObj.category === 'object') {
             // Make sure it has a name, or provide a default
             if (!expenseObj.category.name) {
-              expenseObj.category.name = expenseObj.categoryName || 'Uncategorized';
+              expenseObj.category.name =
+                expenseObj.categoryName || 'Uncategorized';
             }
           } else {
             // If it's just an ID, create a proper Category object
@@ -115,7 +119,7 @@ const expenseResolver = {
             name: 'Uncategorized',
           };
         }
-        
+
         return expenseObj;
       } catch (err) {
         console.error('Error getting expense:', err);
@@ -208,23 +212,30 @@ const expenseResolver = {
     //
     updateExpense: async (_, { input }) => {
       try {
-        console.log('Received update expense input:', JSON.stringify(input, null, 2));
-        
+        console.log(
+          'Received update expense input:',
+          JSON.stringify(input, null, 2)
+        );
+
         // First find the original expense to check what's changing
         const originalExpense = await Expense.findById(input._id);
         if (!originalExpense) {
           throw new Error('Expense not found');
         }
-        console.log('Original expense:', JSON.stringify(originalExpense, null, 2));
-        
+        console.log(
+          'Original expense:',
+          JSON.stringify(originalExpense, null, 2)
+        );
+
         // Create a completely new update object, forcing an update regardless of equality
         const updateObj = {
           // Always include these fields, even if they haven't changed
           description: input.description || originalExpense.description,
           paymentType: input.paymentType || originalExpense.paymentType,
-          amount: input.amount !== undefined ? input.amount : originalExpense.amount,
+          amount:
+            input.amount !== undefined ? input.amount : originalExpense.amount,
         };
-        
+
         // Handle date field specifically
         if (input.date) {
           updateObj.date = input.date;
@@ -234,7 +245,7 @@ const expenseResolver = {
           const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
           updateObj.date = originalExpense.date || formattedDate;
         }
-        
+
         // Handle category update
         if (input.category) {
           const category = await ExpenseCategory.findById(input.category);
@@ -247,13 +258,13 @@ const expenseResolver = {
           // Keep the original category if not changing
           updateObj.category = originalExpense.category;
         }
-        
+
         // Always force an update by including the current timestamp
         // This ensures something is always updated in MongoDB
         updateObj.updatedAt = new Date();
-        
+
         console.log('Final update object:', JSON.stringify(updateObj, null, 2));
-        
+
         // Always update, even if the fields look the same
         // This ensures the MongoDB updatedAt field is updated
         const updatedExpense = await Expense.findByIdAndUpdate(
@@ -261,8 +272,11 @@ const expenseResolver = {
           updateObj,
           { new: true }
         );
-        
-        console.log('Updated expense result:', JSON.stringify(updatedExpense, null, 2));
+
+        console.log(
+          'Updated expense result:',
+          JSON.stringify(updatedExpense, null, 2)
+        );
 
         // Populate the category before returning
         const result = await updatedExpense.populate('category');

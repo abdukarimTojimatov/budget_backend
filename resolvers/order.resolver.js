@@ -19,6 +19,7 @@ const orderResolver = {
         const options = {
           page,
           limit,
+          sort: { createdAt: -1 },
         };
         const result = await Order.paginate(query, options);
         return result; // Ensure this returns the correct paginated structure

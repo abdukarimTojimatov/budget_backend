@@ -7,7 +7,8 @@ const sharingResolver = {
         const options = {
           page,
           limit,
-          populate: [{ path: 'userId', select: 'username' }], // Ensure correct population
+          populate: [{ path: 'userId', select: 'username' }],
+          sort: { createdAt: -1 }, // Ensure correct population
         };
         const query = {};
         console.log('startDate', startDate);

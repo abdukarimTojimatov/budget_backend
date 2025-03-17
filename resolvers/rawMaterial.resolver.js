@@ -12,6 +12,7 @@ const rawMaterialResolvers = {
           page,
           limit,
           populate: 'customer',
+          sort: { createdAt: -1 },
         };
 
         console.log('startDate', startDate);
