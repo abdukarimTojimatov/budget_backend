@@ -6,16 +6,14 @@ const expenseResolver = {
   Query: {
     getExpenses: async (_, { page, limit, categoryId, startDate, endDate }) => {
       try {
-        console.log('startDate', startDate);
-        console.log('endDate', endDate);
         const options = {
           page,
           limit,
+          sort: { createdAt: -1 },
           populate: [
             { path: 'userId', select: 'username' },
             { path: 'category', select: 'name' },
           ],
-          sort: { createdAt: -1 },
         };
 
         const query = {};
@@ -66,7 +64,6 @@ const expenseResolver = {
                 };
               }
             } else {
-              // If category is null/undefined, provide a default
               plainDoc.category = {
                 _id: null,
                 name: 'Uncategorized',

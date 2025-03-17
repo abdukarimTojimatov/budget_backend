@@ -1,34 +1,40 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-const sharingSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+const sharingSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    sharingDescription: {
+      type: String,
+      required: false,
+    },
+    sharingPaymentType: {
+      type: String,
+      enum: ['naqd', 'plastik'],
+      required: true,
+    },
+    sharingCategoryType: {
+      type: String,
+      enum: ['Rozimuhammad', 'Elmurod', 'Egamberdi'],
+      required: true,
+    },
+    sharingAmount: {
+      type: Number,
+      required: true,
+    },
+    sharingDate: {
+      type: String,
+    },
   },
-  sharingDescription: {
-    type: String,
-    required: false,
-  },
-  sharingPaymentType: {
-    type: String,
-    enum: ['naqd', 'plastik'],
-    required: true,
-  },
-  sharingCategoryType: {
-    type: String,
-    enum: ['Rozimuhammad', 'Elmurod', 'Egamberdi'],
-    required: true,
-  },
-  sharingAmount: {
-    type: Number,
-    required: true,
-  },
-  sharingDate: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+    versionKey: false,
+  }
+);
 // Add indexes for improved query performance
 // Compound index for userId + sharingDate for efficient filtering of sharings by date
 sharingSchema.index({ userId: 1, sharingDate: -1 });
