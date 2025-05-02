@@ -318,9 +318,9 @@ const startServer = async () => {
 
     // Connect to MongoDB and start the server
     await connectDB();
-    await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+    await new Promise((resolve) => httpServer.listen({ port: 4005 }, resolve));
 
-    console.log(`🚀 Server ready at http://localhost:4000/graphql`);
+    console.log(`🚀 Server ready at http://localhost:4005/graphql`);
     console.log('Environment: Development');
     console.log('Playground: Enabled');
   } catch (error) {
