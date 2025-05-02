@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-const expenseSchema = new mongoose.Schema(
+const incomeSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -10,11 +10,6 @@ const expenseSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
-    },
-    paymentType: {
-      type: String,
-      enum: ['cash', 'plastik', 'bank_transfer', 'digital_wallet', 'other'],
       required: true,
     },
     category: {
@@ -39,6 +34,11 @@ const expenseSchema = new mongoose.Schema(
       enum: ['daily', 'weekly', 'monthly', 'quarterly', 'yearly', 'none'],
       default: 'none',
     },
+    receiptMethod: {
+      type: String,
+      enum: ['cash', 'bank_deposit', 'check', 'digital_transfer', 'other'],
+      required: true,
+    },
     notes: {
       type: String,
     },
@@ -55,19 +55,11 @@ const expenseSchema = new mongoose.Schema(
 );
 
 // Add indexes for improved query performance
-// Compound index for userId + date for efficient filtering of user expenses by date
-expenseSchema.index({ userId: 1, date: -1 });
+incomeSchema.index({ userId: 1, date: -1 });
+incomeSchema.index({ category: 1 });
+incomeSchema.index({ userId: 1, recurring: 1 });
 
-// Index for category lookups
-expenseSchema.index({ category: 1 });
+incomeSchema.plugin(mongoosePaginate);
+const Income = mongoose.model('Income', incomeSchema);
 
-// Index for payment type filtering
-expenseSchema.index({ paymentType: 1 });
-
-// Index for recurring expenses
-expenseSchema.index({ userId: 1, recurring: 1 });
-
-expenseSchema.plugin(mongoosePaginate);
-const Expense = mongoose.model('Expense', expenseSchema);
-
-export default Expense;
+export default Income;

@@ -1,22 +1,22 @@
-const expenseTypeDef = `#graphql
-  type Expense {
+const incomeTypeDef = `#graphql
+  type Income {
     _id: ID!
     userId: User!
     description: String!
-    paymentType: String!
     category: Category
     amount: Float!
     date: String
     recurring: Boolean
     recurringPeriod: String
+    receiptMethod: String
     notes: String
     attachments: [String]
     createdAt: String
     updatedAt: String
   }
 
-  type PaginatedExpenses {
-    docs: [Expense]
+  type PaginatedIncomes {
+    docs: [Income]
     totalDocs: Int
     limit: Int
     totalPages: Int
@@ -26,33 +26,23 @@ const expenseTypeDef = `#graphql
   }
 
   extend type Query {
-    getExpenses(page: Int, limit: Int, categoryId: ID, startDate: String, endDate: String, recurring: Boolean): PaginatedExpenses
-    getExpense(id: ID!): Expense
-    categoryStatisticsExpense: [CategoryStatistics]
-    getRecurringExpenses: [Expense]
+    getIncomes(page: Int, limit: Int, categoryId: ID, startDate: String, endDate: String, recurring: Boolean): PaginatedIncomes
+    getIncome(id: ID!): Income
+    categoryStatisticsIncome: [CategoryStatistics]
+    getRecurringIncomes: [Income]
   }
 
   extend type Mutation {
-    createExpense(input: CreateExpenseInput!): Expense
-    updateExpense(input: UpdateExpenseInput!): Expense
-    deleteExpense(id: ID!): ID
+    createIncome(input: CreateIncomeInput!): Income
+    updateIncome(input: UpdateIncomeInput!): Income
+    deleteIncome(id: ID!): ID
   }
 
-  type CategoryStatistics {
-    category: Category
-    totalAmount: Float
-  }
-  type Category {
-    _id: ID
-    name: String
-    type: String
-  }
-
-  input CreateExpenseInput {
+  input CreateIncomeInput {
     description: String!
     category: ID!
     amount: Float!
-    paymentType: String!
+    receiptMethod: String!
     date: String
     recurring: Boolean
     recurringPeriod: String
@@ -60,12 +50,12 @@ const expenseTypeDef = `#graphql
     attachments: [String]
   }
 
-  input UpdateExpenseInput {
+  input UpdateIncomeInput {
     _id: ID!
     description: String
-    paymentType: String
     category: ID
     amount: Float
+    receiptMethod: String
     date: String
     recurring: Boolean
     recurringPeriod: String
@@ -74,4 +64,4 @@ const expenseTypeDef = `#graphql
   }
 `;
 
-export default expenseTypeDef;
+export default incomeTypeDef;

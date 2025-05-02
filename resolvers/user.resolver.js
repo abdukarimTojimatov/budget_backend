@@ -1,7 +1,5 @@
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
-import Expense from '../models/expense.model.js';
-import Sharing from '../models/sharing.model.js';
 
 const userResolver = {
   //
@@ -51,7 +49,7 @@ const userResolver = {
         console.log('Login attempt:', { phoneNumber, password }); // Debug log
 
         const { user } = await context.authenticate('graphql-local', {
-          email: phoneNumber, // GraphQLLocalStrategy expects username or email
+          username: phoneNumber, // Using phoneNumber as the identifier
           password,
         });
 
@@ -96,28 +94,6 @@ const userResolver = {
       } catch (err) {
         console.error('Error in user query:', err);
         throw new Error(err.message || 'Error getting user');
-      }
-    },
-  },
-  User: {
-    expenses: async (parent) => {
-      try {
-        const expenses = await Expense.find({ userId: parent._id });
-
-        return expenses;
-      } catch (err) {
-        console.log('Error in user.expenses resolver:', err);
-        throw new Error(err.message || 'Internal server error');
-      }
-    },
-    sharings: async (parent) => {
-      try {
-        const sharings = await Sharing.find({ userId: parent._id });
-
-        return sharings;
-      } catch (err) {
-        console.log('Error in user.sharings resolver:', err);
-        throw new Error(err.message || 'Internal server error');
       }
     },
   },

@@ -1,24 +1,18 @@
 import { mergeResolvers } from '@graphql-tools/merge';
 import userResolver from './user.resolver.js';
+import categoryResolver from './category.resolver.js';
 import expenseResolver from './expense.resolver.js';
-import expenseCategoryResolver from './expenseCategory.resolver.js';
-import orderResolver from './order.resolver.js';
-import sharingResolver from './sharing.resolver.js';
-import rawMaterialResolver from './rawMaterial.resolver.js';
-import dashboardResolver from './dashboard.resolver.js';
-import employeeResolver from './employee.resolver.js';
-import customerResolver from './customer.resolver.js';
+import incomeResolver from './income.resolver.js';
+import debtResolver from './debt.resolver.js';
+import loanResolver from './loan.resolver.js';
 
 const mergedResolvers = mergeResolvers([
   userResolver,
+  categoryResolver,
   expenseResolver,
-  expenseCategoryResolver,
-  orderResolver,
-  sharingResolver,
-  rawMaterialResolver,
-  dashboardResolver,
-  employeeResolver,
-  customerResolver,
+  incomeResolver,
+  debtResolver,
+  loanResolver,
 ]);
 
 export default mergedResolvers;

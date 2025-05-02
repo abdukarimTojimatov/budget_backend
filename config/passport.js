@@ -23,6 +23,7 @@ export const configurePassport = () => {
     console.log('Deserializing user:', id);
     try {
       const user = await User.findById(id);
+      console.log('user', user);
       return done(null, user);
     } catch (err) {
       return done(err);
@@ -31,9 +32,9 @@ export const configurePassport = () => {
 
   // GraphQL Local Strategy
   passport.use(
-    new GraphQLLocalStrategy(async (email, password, done) => {
+    new GraphQLLocalStrategy(async (username, password, done) => {
       try {
-        const phoneNumber = email; // GraphQLLocalStrategy uses email as first param
+        const phoneNumber = username; // Using username param for phoneNumber
 
         console.log('Searching for user with phone number:', phoneNumber); // Debug log
         const user = await User.findOne({ phoneNumber });

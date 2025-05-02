@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
-import Expense from '../models/expense.model.js';
+import Income from '../models/income.model.js';
 import Category from '../models/category.model.js';
+import mongoose from 'mongoose';
 
-const expenseResolver = {
+const incomeResolver = {
   Query: {
-    getExpenses: async (
+    getIncomes: async (
       _,
       { page, limit, categoryId, startDate, endDate, recurring },
       context
@@ -24,12 +24,11 @@ const expenseResolver = {
 
         const query = { userId: context.req.user._id };
 
-        // Apply category filter if provided
+        // Apply filters if provided
         if (categoryId) {
           query.category = new mongoose.Types.ObjectId(categoryId);
         }
 
-        // Apply recurring filter if provided
         if (recurring !== undefined) {
           query.recurring = recurring;
         }
@@ -50,19 +49,19 @@ const expenseResolver = {
           }
         }
 
-        const result = await Expense.paginate(query, options);
+        const result = await Income.paginate(query, options);
         return result;
       } catch (error) {
-        console.error('Error fetching expenses:', error);
-        throw new Error('Error fetching expenses: ' + error.message);
+        console.error('Error fetching incomes:', error);
+        throw new Error('Error fetching incomes: ' + error.message);
       }
     },
 
-    getExpense: async (_, { id }, context) => {
+    getIncome: async (_, { id }, context) => {
       try {
         if (!context.req.user) throw new Error('Not authenticated');
 
-        const expense = await Expense.findOne({
+        const income = await Income.findOne({
           _id: id,
           userId: context.req.user._id,
         }).populate([
@@ -70,22 +69,22 @@ const expenseResolver = {
           { path: 'category', select: 'name icon color' },
         ]);
 
-        if (!expense) {
-          throw new Error('Expense not found');
+        if (!income) {
+          throw new Error('Income not found');
         }
 
-        return expense;
+        return income;
       } catch (error) {
-        console.error('Error fetching expense:', error);
-        throw new Error('Error fetching expense: ' + error.message);
+        console.error('Error fetching income:', error);
+        throw new Error('Error fetching income: ' + error.message);
       }
     },
 
-    categoryStatisticsExpense: async (_, __, context) => {
+    categoryStatisticsIncome: async (_, __, context) => {
       try {
         if (!context.req.user) throw new Error('Not authenticated');
 
-        const result = await Expense.aggregate([
+        const result = await Income.aggregate([
           {
             $match: {
               userId: new mongoose.Types.ObjectId(context.req.user._id),
@@ -116,18 +115,16 @@ const expenseResolver = {
 
         return result;
       } catch (error) {
-        console.error('Error generating category statistics:', error);
-        throw new Error(
-          'Error generating category statistics: ' + error.message
-        );
+        console.error('Error getting income statistics:', error);
+        throw new Error('Error getting income statistics: ' + error.message);
       }
     },
 
-    getRecurringExpenses: async (_, __, context) => {
+    getRecurringIncomes: async (_, __, context) => {
       try {
         if (!context.req.user) throw new Error('Not authenticated');
 
-        const expenses = await Expense.find({
+        const incomes = await Income.find({
           userId: context.req.user._id,
           recurring: true,
         }).populate([
@@ -135,49 +132,50 @@ const expenseResolver = {
           { path: 'category', select: 'name icon color' },
         ]);
 
-        return expenses;
+        return incomes;
       } catch (error) {
-        console.error('Error fetching recurring expenses:', error);
-        throw new Error('Error fetching recurring expenses: ' + error.message);
+        console.error('Error fetching recurring incomes:', error);
+        throw new Error('Error fetching recurring incomes: ' + error.message);
       }
     },
   },
 
   Mutation: {
-    createExpense: async (_, { input }, context) => {
+    createIncome: async (_, { input }, context) => {
       try {
         if (!context.req.user) throw new Error('Not authenticated');
 
+        // Verify that the category exists and belongs to the user
         const category = await Category.findOne({
           _id: input.category,
           userId: context.req.user._id,
-          type: 'expense',
+          type: 'income',
         });
 
         if (!category) {
           throw new Error('Invalid category selected');
         }
 
-        const expenseData = {
+        const incomeData = {
           ...input,
           userId: context.req.user._id,
         };
 
-        const newExpense = new Expense(expenseData);
-        await newExpense.save();
+        const newIncome = new Income(incomeData);
+        await newIncome.save();
 
         // Populate the category field before returning
-        const populatedExpense = await Expense.findById(
-          newExpense._id
-        ).populate('category');
-        return populatedExpense;
+        const populatedIncome = await Income.findById(newIncome._id).populate(
+          'category'
+        );
+        return populatedIncome;
       } catch (error) {
-        console.error('Error creating expense:', error);
-        throw new Error('Error creating expense: ' + error.message);
+        console.error('Error creating income:', error);
+        throw new Error('Error creating income: ' + error.message);
       }
     },
 
-    updateExpense: async (_, { input }, context) => {
+    updateIncome: async (_, { input }, context) => {
       try {
         if (!context.req.user) throw new Error('Not authenticated');
 
@@ -188,7 +186,7 @@ const expenseResolver = {
           const category = await Category.findOne({
             _id: updateData.category,
             userId: context.req.user._id,
-            type: 'expense',
+            type: 'income',
           });
 
           if (!category) {
@@ -196,47 +194,47 @@ const expenseResolver = {
           }
         }
 
-        const expense = await Expense.findOneAndUpdate(
+        const income = await Income.findOneAndUpdate(
           { _id, userId: context.req.user._id },
           updateData,
           { new: true }
         ).populate('category');
 
-        if (!expense) {
+        if (!income) {
           throw new Error(
-            'Expense not found or you do not have permission to update it'
+            'Income not found or you do not have permission to update it'
           );
         }
 
-        return expense;
+        return income;
       } catch (error) {
-        console.error('Error updating expense:', error);
-        throw new Error('Error updating expense: ' + error.message);
+        console.error('Error updating income:', error);
+        throw new Error('Error updating income: ' + error.message);
       }
     },
 
-    deleteExpense: async (_, { id }, context) => {
+    deleteIncome: async (_, { id }, context) => {
       try {
         if (!context.req.user) throw new Error('Not authenticated');
 
-        const expense = await Expense.findOneAndDelete({
+        const income = await Income.findOneAndDelete({
           _id: id,
           userId: context.req.user._id,
         });
 
-        if (!expense) {
+        if (!income) {
           throw new Error(
-            'Expense not found or you do not have permission to delete it'
+            'Income not found or you do not have permission to delete it'
           );
         }
 
         return id;
       } catch (error) {
-        console.error('Error deleting expense:', error);
-        throw new Error('Error deleting expense: ' + error.message);
+        console.error('Error deleting income:', error);
+        throw new Error('Error deleting income: ' + error.message);
       }
     },
   },
 };
 
-export default expenseResolver;
+export default incomeResolver;

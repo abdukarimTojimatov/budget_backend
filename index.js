@@ -63,6 +63,13 @@ app.use(
       'http://elegro.uz',
       'https://www.elegro.uz',
       'http://www.elegro.uz',
+      'http://localhost:8081',
+      'http://localhost:8082',
+      'http://192.168.241.116:8081',
+      'exp://192.168.241.116:8081',
+      'exp://192.168.241.116:8082',
+      'exp://192.168.241.116:19000',
+      'exp://192.168.241.116:80',
     ], // Add frontend origins used in development
     credentials: true, // Enable sending cookies/credentials
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
@@ -289,12 +296,16 @@ const startServer = async () => {
       '/graphql',
       express.json(),
       expressMiddleware(server, {
-        context: async ({ req, res }) => ({
-          ...buildContext({ req, res }),
-          req,
-          res,
-          isDevelopment,
-        }),
+        context: async ({ req, res }) => {
+          const context = buildContext({ req, res });
+          console.log('User in context:', context.user ? context.user._id : 'No user');
+          return {
+            ...context,
+            req,
+            res,
+            isDevelopment,
+          };
+        },
       })
     );
     // Set up JSON parsing middleware for REST APIs

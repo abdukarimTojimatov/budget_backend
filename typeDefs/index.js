@@ -1,27 +1,20 @@
 import { mergeTypeDefs } from '@graphql-tools/merge';
 
+// Core models
 import userTypeDef from './user.typeDef.js';
+import categoryTypeDef from './category.typeDef.js';
 import expenseTypeDef from './expense.typeDef.js';
-import expenseCategoryTypeDef from './expenseCategory.typeDef.js';
-import orderTypeDef from './order.typeDef.js';
-import sharingTypeDef from './sharing.typeDef.js';
-import rawMaterialTypeDef from './rawMaterial.typeDef.js';
-import dashboardTypeDef from './dashboard.typeDef.js';
-import employeeTypeDef from './employee.typeDefs.js';
-import scalarTypeDef from './scalar.typeDef.js';
-import customerTypeDef from './customer.typeDef.js';
+import incomeTypeDef from './income.typeDef.js';
+import debtTypeDef from './debt.typeDef.js';
+import loanTypeDef from './loan.typeDef.js';
 
 const mergedTypeDefs = mergeTypeDefs([
   userTypeDef,
+  categoryTypeDef,
   expenseTypeDef,
-  expenseCategoryTypeDef,
-  orderTypeDef,
-  sharingTypeDef,
-  rawMaterialTypeDef,
-  dashboardTypeDef,
-  employeeTypeDef,
-  scalarTypeDef,
-  customerTypeDef,
+  incomeTypeDef,
+  debtTypeDef,
+  loanTypeDef,
 ]);
 
 export default mergedTypeDefs;
