@@ -58,7 +58,7 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
-      'http://92.112.180.30:3000',
+      'http://92.112.180.30:3005',
       'https://elegro.uz',
       'http://elegro.uz',
       'https://www.elegro.uz',
@@ -298,7 +298,10 @@ const startServer = async () => {
       expressMiddleware(server, {
         context: async ({ req, res }) => {
           const context = buildContext({ req, res });
-          console.log('User in context:', context.user ? context.user._id : 'No user');
+          console.log(
+            'User in context:',
+            context.user ? context.user._id : 'No user'
+          );
           return {
             ...context,
             req,

@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'elegro',
+      name: 'budget',
       cwd: './',
       script: './index.js',
       watch: false,
